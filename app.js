@@ -15,9 +15,9 @@ class QuickDeskApp {
         // Sample data from JSON
         this.users = [
             {id: 1, name: "Admin User", email: "admin@quickdesk.com", role: "admin", avatar: "👤"},
-            {id: 2, name: "John Agent", email: "john@quickdesk.com", role: "agent", avatar: "🛠️"},
+            {id: 2, name: "John Agent", email: "@quickdesk.com", role: "agent", avatar: "🛠️"},
             {id: 3, name: "Sarah Customer", email: "sarah@company.com", role: "user", avatar: "👩"},
-            {id: 4, name: "Mike Support", email: "mike@quickdesk.com", role: "agent", avatar: "🎧"}
+            {id: 4, name: "Mike Support", email: "@quickdesk.com", role: "agent", avatar: "🎧"}
         ];
 
         this.categories = [
@@ -81,8 +81,8 @@ class QuickDeskApp {
                 downvotes: 2,
                 conversations: [
                     {author: "Sarah Customer", message: "Dark mode would be great for night usage", timestamp: "2025-01-10 08:00 PM", type: "customer"},
-                    {author: "John Agent", message: "Thank you for the suggestion. Added to our roadmap", timestamp: "2025-01-11 10:00 AM", type: "agent"},
-                    {author: "John Agent", message: "Dark mode has been implemented in latest version", timestamp: "2025-01-13 02:00 PM", type: "agent"}
+                    {author: " Agent", message: "Thank you for the suggestion. Added to our roadmap", timestamp: "2025-01-11 10:00 AM", type: "agent"},
+                    {author: " Agent", message: "Dark mode has been implemented in latest version", timestamp: "2025-01-13 02:00 PM", type: "agent"}
                 ]
             }
         ];
@@ -341,7 +341,7 @@ class QuickDeskApp {
         console.log('Login attempt:', { role, email, password }); 
         
         if (!role || !email || !password) {
-            this.showToast('कृपया सभी fields भरें', 'error');
+            this.showToast('Requied all fields', 'error');
             return;
         }
 
@@ -620,7 +620,7 @@ class QuickDeskApp {
         
         const searchTerm = searchInput.value.toLowerCase().trim();
         if (!searchTerm) {
-            this.showToast('कृपया search term enter करें', 'error');
+            this.showToast('Please enter search term', 'error');
             return;
         }
 
@@ -630,7 +630,7 @@ class QuickDeskApp {
             ticket.id.toLowerCase().includes(searchTerm)
         );
 
-        this.showToast(`${results.length} tickets मिले`, 'success');
+        this.showToast(`${results.length} tickets found`, 'success');
         
         // Show tickets section with filtered results
         this.showSection('tickets');
@@ -672,7 +672,7 @@ class QuickDeskApp {
         const description = descriptionInput ? descriptionInput.value.trim() : '';
 
         if (!subject || !category || !description) {
-            this.showToast('कृपया सभी required fields भरें', 'error');
+            this.showToast('All fields are required', 'error');
             return;
         }
 
@@ -850,7 +850,7 @@ class QuickDeskApp {
         const message = replyMessage.value.trim();
 
         if (!message) {
-            this.showToast('कृपया reply message लिखें', 'error');
+            this.showToast('Please write reply message', 'error');
             return;
         }
 
