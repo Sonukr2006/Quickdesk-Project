@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickDesk - Help Desk System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-card card">
+                <div class="login-header">
+                    <h1><i class="fas fa-headset"></i> QuickDesk</h1>
+                    <p>Professional Help Desk System</p>
+                </div>
+                <div class="card__body">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label">User Role चुनें:</label>
+                            <select class="form-control" id="userRole" required>
+                                <option value="">Role Select करें</option>
+                                <option value="admin">Admin User</option>
+                                <option value="agent">Support Agent</option>
+                                <option value="user">End User</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password:</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full-width">Login करें</button>
+                    </form>
+                    <div class="login-demo-accounts">
+                        <h4>Demo Accounts:</h4>
+                        <div class="demo-accounts-grid">
+                            <button class="btn btn--outline demo-btn" data-role="admin">Admin Demo</button>
+                            <button class="btn btn--outline demo-btn" data-role="agent">Agent Demo</button>
+                            <button class="btn btn--outline demo-btn" data-role="user">User Demo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="appContainer" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1><i class="fas fa-headset"></i> QuickDesk</h1>
+                <span class="user-role-badge" id="roleBadge"></span>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="currentUserName"></span>
+                    <button class="btn btn--outline btn--sm" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-section="tickets">
+                    <i class="fas fa-ticket-alt"></i> Tickets
+                </button>
+                <button class="nav-btn" data-section="create-ticket">
+                    <i class="fas fa-plus"></i> Create Ticket
+                </button>
+                <button class="nav-btn admin-only" data-section="users">
+                    <i class="fas fa-users"></i> Users
+                </button>
+                <button class="nav-btn admin-only" data-section="analytics">
+                    <i class="fas fa-chart-bar"></i> Analytics
+                </button>
+                <button class="nav-btn" data-section="profile">
+                    <i class="fas fa-user"></i> Profile
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h2>Dashboard</h2>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search tickets..." class="form-control" id="globalSearch">
+                        <button class="btn btn--primary" id="searchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card card">
+                        <div class="stat-icon" style="background: var(--color-bg-1)">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalTickets">156</h3>
+                            <p>Total Tickets</p>
+                        </div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-icon" style="background: var(--color-bg-2)">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="openTickets">23</h3>
+                            <p>Open Tickets</p>
+                        </div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-icon" style="background: var(--color-bg-3)">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="inProgressTickets">12</h3>
+                            <p>In Progress</p>
+                        </div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-icon" style="background: var(--color-bg-4)">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="resolvedTickets">98</h3>
+                            <p>Resolved</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Tickets -->
+                <div class="recent-tickets">
+                    <h3>Recent Tickets</h3>
+                    <div class="tickets-list" id="recentTicketsList">
+                        <!-- Tickets will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tickets Section -->
+            <section id="tickets" class="content-section">
+                <div class="section-header">
+                    <h2>Tickets Management</h2>
+                    <div class="tickets-filters">
+                        <select class="form-control" id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                        <select class="form-control" id="categoryFilter">
+                            <option value="">All Categories</option>
+                            <option value="Technical Issue">Technical Issue</option>
+                            <option value="Billing">Billing</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Bug Report">Bug Report</option>
+                            <option value="Feature Request">Feature Request</option>
+                        </select>
+                        <select class="form-control" id="sortFilter">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="most_replied">Most Replied</option>
+                            <option value="priority">Priority</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tickets-container">
+                    <div class="tickets-table-wrapper">
+                        <table class="tickets-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Subject</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Created By</th>
+                                    <th>Assigned To</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticketsTableBody">
+                                <!-- Tickets will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <button class="btn btn--outline" id="prevPage">Previous</button>
+                        <span id="pageInfo">Page 1 of 3</span>
+                        <button class="btn btn--outline" id="nextPage">Next</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Create Ticket Section -->
+            <section id="create-ticket" class="content-section">
+                <div class="section-header">
+                    <h2>Create New Ticket</h2>
+                </div>
+
+                <div class="create-ticket-form">
+                    <form id="ticketForm" class="card">
+                        <div class="card__body">
+                            <div class="form-group">
+                                <label class="form-label">Subject *</label>
+                                <input type="text" class="form-control" id="ticketSubject" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Category *</label>
+                                <select class="form-control" id="ticketCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Technical Issue">Technical Issue</option>
+                                    <option value="Billing">Billing</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                    <option value="Bug Report">Bug Report</option>
+                                    <option value="Feature Request">Feature Request</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Priority</label>
+                                <select class="form-control" id="ticketPriority">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Critical">Critical</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Description *</label>
+                                <textarea class="form-control" id="ticketDescription" rows="6" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Attachment</label>
+                                <input type="file" class="form-control" id="ticketAttachment" multiple>
+                                <small class="text-secondary">Multiple files supported (Max 10MB each)</small>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--primary">Create Ticket</button>
+                                <button type="reset" class="btn btn--outline">Reset Form</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Users Section (Admin Only) -->
+            <section id="users" class="content-section admin-only">
+                <div class="section-header">
+                    <h2>User Management</h2>
+                    <button class="btn btn--primary" id="addUserBtn">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+
+                <div class="users-grid" id="usersGrid">
+                    <!-- Users will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Analytics Section (Admin Only) -->
+            <section id="analytics" class="content-section admin-only">
+                <div class="section-header">
+                    <h2>Analytics & Reports</h2>
+                </div>
+
+                <div class="analytics-container">
+                    <div class="analytics-cards">
+                        <div class="card">
+                            <div class="card__body">
+                                <h4>Average Response Time</h4>
+                                <div class="metric-value">2.3 hours</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card__body">
+                                <h4>Customer Satisfaction</h4>
+                                <div class="metric-value">92%</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card__body">
+                                <h4>Resolution Rate</h4>
+                                <div class="metric-value">89%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="teams-section">
+                        <h3>Team Performance</h3>
+                        <div class="teams-grid" id="teamsGrid">
+                            <!-- Teams will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="content-section">
+                <div class="section-header">
+                    <h2>Profile & Settings</h2>
+                </div>
+
+                <div class="profile-container">
+                    <div class="profile-card card">
+                        <div class="card__body">
+                            <div class="profile-info">
+                                <div class="profile-avatar">
+                                    <span id="profileAvatar">👤</span>
+                                </div>
+                                <div class="profile-details">
+                                    <h3 id="profileName">User Name</h3>
+                                    <p id="profileEmail">user@example.com</p>
+                                    <span class="status status--success" id="profileRole">User</span>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-settings">
+                                <h4>Notification Settings</h4>
+                                <div class="settings-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" checked> Email notifications
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" checked> Ticket updates
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox"> SMS notifications
+                                    </label>
+                                </div>
+                                <button class="btn btn--primary">Save Settings</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div id="ticketModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTicketId">TICK-001</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="ticket-info">
+                    <h4 id="modalTicketSubject">Ticket Subject</h4>
+                    <div class="ticket-meta">
+                        <span class="status" id="modalTicketStatus">Open</span>
+                        <span class="priority" id="modalTicketPriority">High</span>
+                        <span class="category" id="modalTicketCategory">Technical</span>
+                    </div>
+                    <p id="modalTicketDescription">Ticket description...</p>
+                </div>
+
+                <div class="conversation-section">
+                    <h4>Conversation</h4>
+                    <div class="conversation-timeline" id="conversationTimeline">
+                        <!-- Conversation will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="ticket-actions">
+                    <div class="status-actions agent-only">
+                        <select class="form-control" id="statusUpdate">
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                        <button class="btn btn--primary" id="updateStatusBtn">Update Status</button>
+                    </div>
+                    
+                    <div class="reply-section">
+                        <textarea class="form-control" placeholder="Type your reply..." id="replyMessage" rows="3"></textarea>
+                        <div class="reply-actions">
+                            <div class="vote-buttons">
+                                <button class="btn btn--outline vote-btn" id="upvoteBtn">
+                                    <i class="fas fa-thumbs-up"></i> <span id="upvoteCount">3</span>
+                                </button>
+                                <button class="btn btn--outline vote-btn" id="downvoteBtn">
+                                    <i class="fas fa-thumbs-down"></i> <span id="downvoteCount">0</span>
+                                </button>
+                            </div>
+                            <button class="btn btn--primary" id="sendReply">Send Reply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="toast success-toast hidden">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
